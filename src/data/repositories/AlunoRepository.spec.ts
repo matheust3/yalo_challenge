@@ -111,6 +111,7 @@ describe('AlunoRepository.spec.ts - create', () => {
     await expect(sut.create(aluno)).rejects.toThrowError(error)
   })
 })
+
 describe('AlunoRepository.spec.ts - delete', () => {
   let sut: SutTypes['sut']
   let prismaClient: SutTypes['prismaClient']
@@ -136,5 +137,36 @@ describe('AlunoRepository.spec.ts - delete', () => {
     //! Act
     //! Assert
     await expect(sut.delete(12)).rejects.toThrowError(error)
+  })
+})
+describe('AlunoRepository.spec.ts - find', () => {
+  let sut: SutTypes['sut']
+  let prismaClient: SutTypes['prismaClient']
+  let aluno: SutTypes['aluno']
+
+  beforeEach(() => {
+    ({ sut, prismaClient, aluno } = makeSut())
+  })
+
+  test('ensure call prisma with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.find({
+      id: aluno.id,
+      cpf: aluno.cpf,
+      idColegio: aluno.id_colegio,
+      idTurma: aluno.id_turma,
+      score: aluno.score
+    })
+    //! Assert
+    expect(prismaClient.alunos.findMany).toBeCalledWith({
+      where: {
+        cpf: '12345678901',
+        id: 1,
+        id_colegio: 1,
+        id_turma: 1,
+        score: 1
+      }
+    })
   })
 })

@@ -37,7 +37,19 @@ export class AlunoRepository implements IAlunoRepository {
     })
   }
 
-  find: (params: { cpf?: string | undefined, id?: number | undefined, idColegio?: number | undefined, idTurma?: number | undefined, score?: number | undefined }) => Promise<IAluno[]>
+  async find (params: { cpf?: string, id?: number, idColegio?: number, idTurma?: number, score?: number }): Promise<IAluno[]> {
+    await this._prismaClient.alunos.findMany({
+      where: {
+        cpf: params.cpf,
+        id: params.id,
+        id_colegio: params.idColegio,
+        id_turma: params.idTurma,
+        score: params.score
+      }
+    })
+    return []
+  }
+
   getAluno: (params: { cpf?: string | undefined, id?: number | undefined }) => Promise<IAluno | undefined>
   update: (aluno: IAluno) => Promise<IAluno>
 }
