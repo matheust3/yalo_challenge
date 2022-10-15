@@ -8,7 +8,7 @@ export class AlunoRepository implements IAlunoRepository {
   ) {}
 
   async create (aluno: IAluno): Promise<IAluno> {
-    await this._prismaClient.alunos.create({
+    const result = await this._prismaClient.alunos.create({
       data: {
         id: aluno.id,
         cpf: aluno.cpf,
@@ -20,7 +20,15 @@ export class AlunoRepository implements IAlunoRepository {
       }
     })
 
-    return aluno
+    return {
+      id: result.id,
+      cpf: result.cpf,
+      name: result.name ?? undefined,
+      email: result.email ?? undefined,
+      id_colegio: result.id_colegio,
+      id_turma: result.id_turma,
+      score: result.score?.toNumber() ?? undefined
+    }
   }
 
   delete: (id: number) => Promise<void>

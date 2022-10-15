@@ -1,7 +1,8 @@
 import { AlunoRepository } from './AlunoRepository'
-import { DeepMockProxy, mockDeep, MockProxy } from 'jest-mock-extended'
+import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended'
 import { PrismaClient } from '@prisma/client'
 import { IAluno } from '../../domain/models/IAluno'
+import { Decimal } from '@prisma/client/runtime'
 
 interface SutTypes {
   sut: AlunoRepository
@@ -14,7 +15,7 @@ const makeSut = (): SutTypes => {
 
   const sut = new AlunoRepository(prismaClient)
 
-  const aluno = mockDeep<IAluno>({
+  const aluno = mock<IAluno>({
     id: 1,
     cpf: '12345678901',
     email: 'email',
@@ -34,6 +35,16 @@ describe('AlunoRepository.spec.ts - create', () => {
 
   beforeEach(() => {
     ({ sut, prismaClient, aluno } = makeSut())
+
+    prismaClient.alunos.create.mockResolvedValue({
+      id: aluno.id,
+      cpf: aluno.cpf,
+      name: aluno.name ?? 'name',
+      email: aluno.email ?? 'name',
+      id_colegio: aluno.id_colegio,
+      id_turma: aluno.id_turma,
+      score: new Decimal(1)
+    })
   })
 
   test('ensure call prisma with correct params', async () => {
@@ -52,5 +63,15 @@ describe('AlunoRepository.spec.ts - create', () => {
         score: aluno.score
       }
     })
+  })
+
+  test('ensure return created data', async () => {
+    //! Arrange
+    const expectedAluno = { ...aluno, ...{ _isMockObject: undefined } }
+    delete expectedAluno._isMockObject
+    //! Act
+    const result = await sut.create(aluno)
+    //! Assert
+    expect(result).toEqual(expectedAluno)
   })
 })
