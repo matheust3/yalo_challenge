@@ -108,6 +108,14 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.statusCode).toBe(204)
     expect(httpResponse.body).toBeUndefined()
   })
+
+  test('ensure throws if repository throws', async () => {
+    //! Arrange
+    alunoRepository.getAluno.mockRejectedValue(new Error('error'))
+    //! Act
+    //! Assert
+    await expect(sut.del(httpRequest)).rejects.toThrow(new Error('error'))
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
