@@ -37,12 +37,22 @@ export class AlunosController implements IController {
 
   async get (httpRequest: IHttpRequest): Promise<IHttpResponse> {
     let idTurma: number | undefined
+    let idColegio: number | undefined
     if (httpRequest.params?.id_turma !== undefined) {
       idTurma = Number(httpRequest.params?.id_turma)
       if (idTurma !== parseInt(idTurma.toString(), 10)) {
         return {
           statusCode: 400,
           body: { message: '"id_turma" must be a integer' }
+        }
+      }
+    }
+    if (httpRequest.params?.id_colegio !== undefined) {
+      idColegio = Number(httpRequest.params?.id_colegio)
+      if (idColegio !== parseInt(idColegio.toString(), 10)) {
+        return {
+          statusCode: 400,
+          body: { message: '"id_colegio" must be a integer' }
         }
       }
     }

@@ -147,6 +147,25 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: '"id_turma" must be a integer' })
   })
+  test('ensure return 400 if id_colegio is not a integer', async () => {
+    //! Arrange
+    httpRequest.params = { id_colegio: '1.1' }
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a integer' })
+  })
+
+  test('ensure return 400 if id_colegio is a string', async () => {
+    //! Arrange
+    httpRequest.params = { id_colegio: 'string' }
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a integer' })
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
