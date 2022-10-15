@@ -154,4 +154,13 @@ describe('AlunosController.spec.ts - put', () => {
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(aluno)
   })
+
+  test('ensure throws if repository throws', async () => {
+    //! Arrange
+    const error = new Error('error message')
+    alunosRepository.update.mockRejectedValueOnce(error)
+    //! Act
+    //! Assert
+    await expect(sut.put(httpRequest)).rejects.toThrow(error)
+  })
 })
