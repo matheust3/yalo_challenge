@@ -25,11 +25,14 @@ describe('GetByIdController.spec.ts - get', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
   let alunoRepository: SutTypes['alunoRepository']
+  let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
 
     httpRequest.params = { id: '2' }
+
+    alunoRepository.getAluno.mockResolvedValue(aluno)
   })
 
   test('ensure return 400 if id is not passed', async () => {
@@ -68,5 +71,33 @@ describe('GetByIdController.spec.ts - get', () => {
     await sut.get(httpRequest)
     //! Assert
     expect(alunoRepository.getAluno).toBeCalledWith({ id: 2 })
+  })
+
+  test('ensure return 404 if aluno not exists', async () => {
+    //! Arrange
+    alunoRepository.getAluno.mockResolvedValue(undefined)
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual({ message: 'Aluno not found' })
+  })
+
+  test('ensure return 200 and aluno if found', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(aluno)
+  })
+
+  test('ensure throws if repository throws', async () => {
+    //! Arrange
+    const error = new Error('Repository error')
+    alunoRepository.getAluno.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.get(httpRequest)).rejects.toThrow(error)
   })
 })
