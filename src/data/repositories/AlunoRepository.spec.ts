@@ -191,4 +191,13 @@ describe('AlunoRepository.spec.ts - find', () => {
     //! Assert
     expect(alunos).toEqual([expectedAluno])
   })
+
+  test('ensure throws if prisma throws', async () => {
+    //! Arrange
+    const error = new Error('error')
+    prismaClient.alunos.findMany.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.find({})).rejects.toThrowError(error)
+  })
 })
