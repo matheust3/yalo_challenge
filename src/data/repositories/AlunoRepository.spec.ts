@@ -146,6 +146,18 @@ describe('AlunoRepository.spec.ts - find', () => {
 
   beforeEach(() => {
     ({ sut, prismaClient, aluno } = makeSut())
+
+    prismaClient.alunos.findMany.mockResolvedValue([
+      {
+        id: aluno.id,
+        cpf: aluno.cpf,
+        name: aluno.name ?? 'name',
+        email: aluno.email ?? 'name',
+        id_colegio: aluno.id_colegio,
+        id_turma: aluno.id_turma,
+        score: new Decimal(1)
+      }
+    ])
   })
 
   test('ensure call prisma with correct params', async () => {
@@ -168,5 +180,15 @@ describe('AlunoRepository.spec.ts - find', () => {
         score: 1
       }
     })
+  })
+
+  test('ensure return result', async () => {
+    //! Arrange
+    const expectedAluno = { ...aluno, ...{ _isMockObject: undefined } }
+    delete expectedAluno._isMockObject
+    //! Act
+    const alunos = await sut.find({})
+    //! Assert
+    expect(alunos).toEqual([expectedAluno])
   })
 })

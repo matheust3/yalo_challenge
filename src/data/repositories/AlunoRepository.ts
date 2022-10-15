@@ -38,7 +38,7 @@ export class AlunoRepository implements IAlunoRepository {
   }
 
   async find (params: { cpf?: string, id?: number, idColegio?: number, idTurma?: number, score?: number }): Promise<IAluno[]> {
-    await this._prismaClient.alunos.findMany({
+    const alunos = await this._prismaClient.alunos.findMany({
       where: {
         cpf: params.cpf,
         id: params.id,
@@ -47,7 +47,15 @@ export class AlunoRepository implements IAlunoRepository {
         score: params.score
       }
     })
-    return []
+    return alunos.map(aluno => ({
+      id: aluno.id,
+      cpf: aluno.cpf,
+      name: aluno.name ?? undefined,
+      email: aluno.email ?? undefined,
+      id_colegio: aluno.id_colegio,
+      id_turma: aluno.id_turma,
+      score: aluno.score?.toNumber() ?? undefined
+    }))
   }
 
   getAluno: (params: { cpf?: string | undefined, id?: number | undefined }) => Promise<IAluno | undefined>
