@@ -113,7 +113,7 @@ describe('AlunosController.spec.ts - put', () => {
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
 
-    alunosRepository.create.mockResolvedValue(aluno)
+    alunosRepository.update.mockResolvedValue(aluno)
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -144,5 +144,14 @@ describe('AlunosController.spec.ts - put', () => {
     await sut.put(httpRequest)
     //! Assert
     expect(alunosRepository.update).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('ensure return updated aluno', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(aluno)
   })
 })
