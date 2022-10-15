@@ -32,7 +32,7 @@ export class GetByIdController implements IController {
       } else {
         return {
           statusCode: 200,
-          body: {}
+          body: aluno
         }
       }
     }
