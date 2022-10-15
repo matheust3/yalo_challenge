@@ -85,6 +85,16 @@ describe('AlunosController.spec.ts - del', () => {
     //! Assert
     expect(alunoRepository.getAluno).toHaveBeenCalledWith({ id: 1000, cpf: '12345678901' })
   })
+
+  test('ensure return 404 if aluno not found', async () => {
+    //! Arrange
+    alunoRepository.getAluno.mockResolvedValue(undefined)
+    //! Act
+    const httpResponse = await sut.del(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual({ message: 'Aluno not found' })
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
