@@ -284,4 +284,13 @@ describe('AlunoRepository.spec.ts - getAluno', () => {
     //! Assert
     expect(result).toBeUndefined()
   })
+
+  test('ensure throws if prisma throws', async () => {
+    //! Arrange
+    const error = new Error('error')
+    prismaClient.alunos.findFirst.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.getAluno({})).rejects.toThrowError(error)
+  })
 })
