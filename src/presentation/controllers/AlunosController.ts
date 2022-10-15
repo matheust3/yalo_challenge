@@ -21,6 +21,7 @@ export class AlunosController implements IController {
           body: { message: '"id" must be a integer' }
         }
       } else {
+        await this._alunoRepository.getAluno({ cpf: httpRequest.params?.cpf, id })
         return { statusCode: 200, body: { message: 'Aluno deleted' } }
       }
     }

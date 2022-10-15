@@ -40,11 +40,12 @@ const makeSut = (): SutTypes => {
 describe('AlunosController.spec.ts - del', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
+  let alunoRepository: SutTypes['alunoRepository']
 
   beforeEach(() => {
-    ({ sut, httpRequest } = makeSut())
+    ({ sut, httpRequest, alunoRepository } = makeSut())
 
-    httpRequest.params = { id: '1', cpf: '12345678901' }
+    httpRequest.params = { id: '1e3', cpf: '12345678901' }
   })
 
   test('ensure return 400 if id is not a integer', async () => {
@@ -76,21 +77,29 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: '"id" or "cpf" is required' })
   })
+
+  test('ensure check if aluno exists', async () => {
+    //! Arrange
+    //! Act
+    await sut.del(httpRequest)
+    //! Assert
+    expect(alunoRepository.getAluno).toHaveBeenCalledWith({ id: 1000, cpf: '12345678901' })
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
-  let alunosRepository: SutTypes['alunoRepository']
+  let alunoRepository: SutTypes['alunoRepository']
   let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository: alunosRepository, aluno } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
 
-    alunosRepository.create.mockResolvedValue(aluno)
+    alunoRepository.create.mockResolvedValue(aluno)
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -120,7 +129,7 @@ describe('AlunosController.spec.ts - post', () => {
     //! Act
     await sut.post(httpRequest)
     //! Assert
-    expect(alunosRepository.create).toHaveBeenCalledWith(httpRequest.body)
+    expect(alunoRepository.create).toHaveBeenCalledWith(httpRequest.body)
   })
 
   test('ensure return created aluno', async () => {
@@ -135,7 +144,7 @@ describe('AlunosController.spec.ts - post', () => {
   test('ensure throws if repository throws', async () => {
     //! Arrange
     const error = new Error('error message')
-    alunosRepository.create.mockRejectedValueOnce(error)
+    alunoRepository.create.mockRejectedValueOnce(error)
     //! Act
     //! Assert
     await expect(sut.post(httpRequest)).rejects.toThrow(error)
