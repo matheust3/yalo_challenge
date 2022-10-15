@@ -69,4 +69,14 @@ describe('GetByIdController.spec.ts - get', () => {
     //! Assert
     expect(alunoRepository.getAluno).toBeCalledWith({ id: 2 })
   })
+
+  test('ensure return 404 if aluno not exists', async () => {
+    //! Arrange
+    alunoRepository.getAluno.mockResolvedValue(undefined)
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual({ message: 'Aluno not found' })
+  })
 })

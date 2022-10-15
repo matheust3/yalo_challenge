@@ -23,10 +23,17 @@ export class GetByIdController implements IController {
         body: { message: '"id" must be an integer' }
       }
     } else {
-      await this._alunoRepository.getAluno({ id })
-      return {
-        statusCode: 200,
-        body: {}
+      const aluno = await this._alunoRepository.getAluno({ id })
+      if (aluno === undefined) {
+        return {
+          statusCode: 404,
+          body: { message: 'Aluno not found' }
+        }
+      } else {
+        return {
+          statusCode: 200,
+          body: {}
+        }
       }
     }
   }
