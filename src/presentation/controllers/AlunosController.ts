@@ -1,9 +1,14 @@
 import type { IController, IHttpRequest, IHttpResponse } from '../protocols'
 import { AlunoSchema } from '../schemas/AlunoSchema'
+import type { IAlunoRepository } from '../../domain/repositories/IAlunoRepository'
 
 export class AlunosController implements IController {
+  constructor (
+    private readonly _alunosRepository: IAlunoRepository
+  ) {}
+
   async post (httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    const { error } = AlunoSchema.validate(httpRequest.body)
+    const { error, value } = AlunoSchema.validate(httpRequest.body)
     if (error !== undefined) {
       return {
         statusCode: 400,
@@ -11,7 +16,12 @@ export class AlunosController implements IController {
           message: error.message
         }
       }
+    } else {
+      const aluno = await this._alunosRepository.create(value)
+      return {
+        statusCode: 201,
+        body: aluno
+      }
     }
-    throw new Error('Not implemented')
   }
 }

@@ -1,14 +1,16 @@
 import { AlunosController } from './AlunosController'
 import type { IAluno } from '../../domain/models/IAluno'
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended'
+import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended'
 import * as AlunoSchema from '../schemas/AlunoSchema'
 import type { ValidationError } from 'joi'
 import type { IHttpRequest } from '../protocols'
+import type { IAlunoRepository } from '../../domain/repositories/IAlunoRepository'
 
 interface SutTypes {
   sut: AlunosController
   httpRequest: IHttpRequest
   aluno: IAluno
+  alunosRepository: MockProxy<IAlunoRepository> & IAlunoRepository
 }
 
 jest.mock('../schemas/AlunoSchema')
@@ -28,17 +30,24 @@ const makeSut = (): SutTypes => {
     body: aluno
   }
 
-  const sut = new AlunosController()
+  const alunosRepository = mock<IAlunoRepository>()
 
-  return { sut, aluno, httpRequest }
+  const sut = new AlunosController(alunosRepository)
+
+  return { sut, aluno, httpRequest, alunosRepository }
 }
 
 describe('AlunosController.spec.ts - post', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
+  let alunosRepository: SutTypes['alunosRepository']
+  let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest } = makeSut())
+    ({ sut, httpRequest, alunosRepository, aluno } = makeSut())
+    const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
+
+    alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -46,11 +55,19 @@ describe('AlunosController.spec.ts - post', () => {
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
     const error = mockDeep<ValidationError>()
     error.message = 'error message'
-    alunoSchemaMocked.AlunoSchema.validate.mockReturnValueOnce({ error, value: undefined })
+    alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error, value: undefined })
     //! Act
     const httpResponse = await sut.post(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: 'error message' })
+  })
+
+  test('ensure call repository with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.post(httpRequest)
+    //! Assert
+    expect(alunosRepository.create).toHaveBeenCalledWith(httpRequest.body)
   })
 })
