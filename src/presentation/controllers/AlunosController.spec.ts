@@ -118,7 +118,7 @@ describe('AlunosController.spec.ts - del', () => {
   })
 })
 
-describe('AlunosController.spec.ts - del', () => {
+describe('AlunosController.spec.ts - get', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
   let alunoRepository: SutTypes['alunoRepository']
