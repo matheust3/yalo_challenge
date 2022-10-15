@@ -1,6 +1,6 @@
 import { AlunoRepository } from './AlunoRepository'
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended'
-import { PrismaClient } from '@prisma/client'
+import { Alunos, PrismaClient } from '@prisma/client'
 import { IAluno } from '../../domain/models/IAluno'
 import { Decimal } from '@prisma/client/runtime'
 
@@ -73,5 +73,32 @@ describe('AlunoRepository.spec.ts - create', () => {
     const result = await sut.create(aluno)
     //! Assert
     expect(result).toEqual(expectedAluno)
+  })
+
+  test('ensure return aluno without name if prisma return name null', async () => {
+    //! Arrange
+    prismaClient.alunos.create.mockResolvedValueOnce(mock<Alunos>({ name: null, score: new Decimal(1) }))
+    //! Act
+    const result = await sut.create(aluno)
+    //! Assert
+    expect(result.name).toBeUndefined()
+  })
+
+  test('ensure return aluno without email if prisma return email null', async () => {
+    //! Arrange
+    prismaClient.alunos.create.mockResolvedValueOnce(mock<Alunos>({ email: null, score: new Decimal(1) }))
+    //! Act
+    const result = await sut.create(aluno)
+    //! Assert
+    expect(result.email).toBeUndefined()
+  })
+
+  test('ensure return aluno without score if prisma return score null', async () => {
+    //! Arrange
+    prismaClient.alunos.create.mockResolvedValueOnce(mock<Alunos>({ score: null }))
+    //! Act
+    const result = await sut.create(aluno)
+    //! Assert
+    expect(result.score).toBeUndefined()
   })
 })
