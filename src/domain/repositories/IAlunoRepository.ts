@@ -17,12 +17,14 @@ export interface IAlunoRepository {
 
   /**
    * Get the list of registered alunos
-   * @param {number} idTurma Turma id
+   * @param {string} cpf Aluno cpf
+   * @param {number} id Aluno id
    * @param {number} idColegio Colegio id
+   * @param {number} idTurma Turma id
    * @param {number} score Score
    * @returns {Promise<IAluno[]>} List of alunos
    */
-  find: (params: { idColegio?: number, idTurma?: number, score?: number }) => Promise<IAluno[]>
+  find: (params: { cpf?: string, id?: number, idColegio?: number, idTurma?: number, score?: number }) => Promise<IAluno[]>
 
   /**
    * Get a Aluno by id or cpf
