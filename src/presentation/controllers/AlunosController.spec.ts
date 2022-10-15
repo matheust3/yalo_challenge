@@ -206,6 +206,16 @@ describe('AlunosController.spec.ts - get', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: '"id" is not allowed' })
   })
+
+  test('ensure not return error if no params as passed', async () => {
+    //! Arrange
+    httpRequest.params = {}
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual([aluno])
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
