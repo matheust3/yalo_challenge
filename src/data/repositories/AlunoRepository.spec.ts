@@ -128,4 +128,13 @@ describe('AlunoRepository.spec.ts - delete', () => {
       where: { id: 12 }
     })
   })
+
+  test('ensure throws if prisma throws', async () => {
+    //! Arrange
+    const error = new Error('error')
+    prismaClient.alunos.delete.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.delete(12)).rejects.toThrowError(error)
+  })
 })
