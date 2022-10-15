@@ -111,3 +111,21 @@ describe('AlunoRepository.spec.ts - create', () => {
     await expect(sut.create(aluno)).rejects.toThrowError(error)
   })
 })
+describe('AlunoRepository.spec.ts - delete', () => {
+  let sut: SutTypes['sut']
+  let prismaClient: SutTypes['prismaClient']
+
+  beforeEach(() => {
+    ({ sut, prismaClient } = makeSut())
+  })
+
+  test('ensure call prisma with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.delete(12)
+    //! Assert
+    expect(prismaClient.alunos.delete).toBeCalledWith({
+      where: { id: 12 }
+    })
+  })
+})

@@ -31,7 +31,12 @@ export class AlunoRepository implements IAlunoRepository {
     }
   }
 
-  delete: (id: number) => Promise<void>
+  async delete (id: number): Promise<void> {
+    await this._prismaClient.alunos.delete({
+      where: { id }
+    })
+  }
+
   find: (params: { cpf?: string | undefined, id?: number | undefined, idColegio?: number | undefined, idTurma?: number | undefined, score?: number | undefined }) => Promise<IAluno[]>
   getAluno: (params: { cpf?: string | undefined, id?: number | undefined }) => Promise<IAluno | undefined>
   update: (aluno: IAluno) => Promise<IAluno>
