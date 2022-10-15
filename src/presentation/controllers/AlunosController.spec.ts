@@ -100,3 +100,32 @@ describe('AlunosController.spec.ts - post', () => {
     await expect(sut.post(httpRequest)).rejects.toThrow(error)
   })
 })
+
+describe('AlunosController.spec.ts - put', () => {
+  let sut: SutTypes['sut']
+  let httpRequest: SutTypes['httpRequest']
+  let alunosRepository: SutTypes['alunosRepository']
+  let aluno: SutTypes['aluno']
+
+  beforeEach(() => {
+    ({ sut, httpRequest, alunosRepository, aluno } = makeSut())
+    const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
+
+    alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
+
+    alunosRepository.create.mockResolvedValue(aluno)
+  })
+
+  test('ensure return 400 if request body is invalid', async () => {
+    //! Arrange
+    const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
+    const error = mockDeep<ValidationError>()
+    error.message = 'error message'
+    alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error, value: undefined })
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: 'error message' })
+  })
+})

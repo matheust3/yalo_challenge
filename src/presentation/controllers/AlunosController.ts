@@ -24,4 +24,17 @@ export class AlunosController implements IController {
       }
     }
   }
+
+  async put (httpRequest: IHttpRequest): Promise<IHttpResponse> {
+    const { error } = AlunoSchema.validate(httpRequest.body)
+    if (error !== undefined) {
+      return {
+        statusCode: 400,
+        body: {
+          message: error.message
+        }
+      }
+    }
+    throw new Error('Method not implemented.')
+  }
 }
