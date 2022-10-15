@@ -34,7 +34,8 @@ export class AlunosController implements IController {
           message: error.message
         }
       }
+    } else {
+      return { statusCode: 200, body: {} }
     }
-    throw new Error('Method not implemented.')
   }
 }

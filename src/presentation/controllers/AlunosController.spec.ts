@@ -128,4 +128,13 @@ describe('AlunosController.spec.ts - put', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: 'error message' })
   })
+
+  test('ensure call validator with correct param', async () => {
+    //! Arrange
+    //! Act
+    await sut.put(httpRequest)
+    //! Assert
+    const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
+    expect(alunoSchemaMocked.AlunoSchema.validate).toHaveBeenCalledWith(httpRequest.body)
+  })
 })
