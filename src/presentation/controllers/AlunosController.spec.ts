@@ -118,6 +118,37 @@ describe('AlunosController.spec.ts - del', () => {
   })
 })
 
+describe('AlunosController.spec.ts - del', () => {
+  let sut: SutTypes['sut']
+  let httpRequest: SutTypes['httpRequest']
+
+  beforeEach(() => {
+    ({ sut, httpRequest } = makeSut())
+
+    httpRequest.params = { id: '1e3', cpf: '12345678901' }
+  })
+
+  test('ensure return 400 if id_turma is not a integer', async () => {
+    //! Arrange
+    httpRequest.params = { id_turma: '1.1' }
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id_turma" must be a integer' })
+  })
+
+  test('ensure return 400 if id_turma is a string', async () => {
+    //! Arrange
+    httpRequest.params = { id_turma: 'string' }
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id_turma" must be a integer' })
+  })
+})
+
 describe('AlunosController.spec.ts - post', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']

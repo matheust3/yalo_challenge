@@ -35,6 +35,20 @@ export class AlunosController implements IController {
     }
   }
 
+  async get (httpRequest: IHttpRequest): Promise<IHttpResponse> {
+    let idTurma: number | undefined
+    if (httpRequest.params?.id_turma !== undefined) {
+      idTurma = Number(httpRequest.params?.id_turma)
+      if (idTurma !== parseInt(idTurma.toString(), 10)) {
+        return {
+          statusCode: 400,
+          body: { message: '"id_turma" must be a integer' }
+        }
+      }
+    }
+    throw new Error('Method not implemented.')
+  }
+
   async post (httpRequest: IHttpRequest): Promise<IHttpResponse> {
     const { error, value } = AlunoSchema.validate(httpRequest.body)
     if (error !== undefined) {
