@@ -1,0 +1,39 @@
+services:
+  yalo_dev_container:
+    privileged: true # Para invocar o CLI docker
+    user: developer
+    container_name: yalo_dev_container
+    image: yalo_dev_container
+    build:
+      context: ..
+      dockerfile: ./.devcontainer/Dockerfile
+      args:
+        - HOST_DOCKER_GROUP_ID=${HOST_DOCKER_GROUP_ID}
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ..
+        target: /home/developer/yalo_dev
+      #Para invocar o CLI do docker
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    network_mode: 'host'
+    #Quando essa instrução terminar o container fecha
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    #Sobe um banco de dados
+    depends_on:
+      - yalo_dev_database
+  yalo_dev_database:
+    container_name: yalo_dev_database
+    image: postgres:15.0
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - type: bind
+        source: ./database
+        target: /var/lib/postgresql/data
+    ports:
+      - 5432:5432

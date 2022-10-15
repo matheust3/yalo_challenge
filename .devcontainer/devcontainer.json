@@ -1,0 +1,11 @@
+{
+  "name": "yalo_dev_container",
+  "service": "yalo_dev_container",
+  "dockerComposeFile": "./docker-compose.yml",
+  //Para copiar o ID do grupo do Docker da máquina host para as variáveis de ambiente do Docker
+  "initializeCommand": "echo HOST_DOCKER_GROUP_ID=$(getent group docker | cut -d: -f3) > .devcontainer/.env",
+  "settings": {},
+  "extensions": [],
+  "workspaceFolder": "/home/developer/yalo_dev",
+  "postStartCommand": "npm install -g npm"
+}
