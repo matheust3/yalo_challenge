@@ -101,4 +101,13 @@ describe('AlunoRepository.spec.ts - create', () => {
     //! Assert
     expect(result.score).toBeUndefined()
   })
+
+  test('ensure throws if prisma throws', async () => {
+    //! Arrange
+    const error = new Error('error')
+    prismaClient.alunos.create.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.create(aluno)).rejects.toThrowError(error)
+  })
 })
