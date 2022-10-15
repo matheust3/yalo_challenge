@@ -16,9 +16,18 @@ export interface IAlunoRepository {
   delete: (id: number) => Promise<void>
 
   /**
+   * Get the list of registered alunos
+   * @param {number} idTurma Turma id
+   * @param {number} idColegio Colegio id
+   * @param {number} score Score
+   * @returns {Promise<IAluno[]>} List of alunos
+   */
+  find: (params: { idColegio?: number, idTurma?: number, score?: number }) => Promise<IAluno[]>
+
+  /**
    * Get a Aluno by id or cpf
-   * @param {number} id - Aluno id
-   * @param {string} cpf - Aluno cpf
+   * @param {number} id Aluno id
+   * @param {string} cpf Aluno cpf
    * @returns {Promise<IAluno | undefined>} Aluno found
    */
   getAluno: (params: { cpf?: string, id?: number }) => Promise<IAluno | undefined>

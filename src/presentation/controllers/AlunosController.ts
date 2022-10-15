@@ -66,7 +66,12 @@ export class AlunosController implements IController {
         }
       }
     }
-    throw new Error('Method not implemented.')
+
+    const alunos = await this._alunoRepository.find({ idColegio, idTurma, score })
+    return {
+      statusCode: 200,
+      body: alunos
+    }
   }
 
   async post (httpRequest: IHttpRequest): Promise<IHttpResponse> {

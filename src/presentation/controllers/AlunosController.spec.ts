@@ -121,11 +121,12 @@ describe('AlunosController.spec.ts - del', () => {
 describe('AlunosController.spec.ts - del', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
+  let alunoRepository: SutTypes['alunoRepository']
 
   beforeEach(() => {
-    ({ sut, httpRequest } = makeSut())
+    ({ sut, httpRequest, alunoRepository } = makeSut())
 
-    httpRequest.params = { id: '1e3', cpf: '12345678901' }
+    httpRequest.params = { id_turma: '1e3', id_colegio: '4', score: '4.0' }
   })
 
   test('ensure return 400 if id_turma is not a integer', async () => {
@@ -174,6 +175,14 @@ describe('AlunosController.spec.ts - del', () => {
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: '"score" must be a number' })
+  })
+
+  test('ensure call repository with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.get(httpRequest)
+    //! Assert
+    expect(alunoRepository.find).toHaveBeenCalledWith({ idTurma: 1000, idColegio: 4, score: 4.0 })
   })
 })
 
