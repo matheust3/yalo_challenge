@@ -166,6 +166,15 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a integer' })
   })
+  test('ensure return 400 if score is not a number', async () => {
+    //! Arrange
+    httpRequest.params = { score: 'string' }
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"score" must be a number' })
+  })
 })
 
 describe('AlunosController.spec.ts - post', () => {
