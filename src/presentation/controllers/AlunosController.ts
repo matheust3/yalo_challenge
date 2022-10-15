@@ -62,10 +62,20 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const aluno = await this._alunoRepository.create(value)
-      return {
-        statusCode: 201,
-        body: aluno
+      const alunos = await this._alunoRepository.find({ cpf: value.cpf, id: value.id })
+      if (alunos.length > 0) {
+        return {
+          statusCode: 409,
+          body: {
+            message: 'cpf or id is already in use'
+          }
+        }
+      } else {
+        const aluno = await this._alunoRepository.create(value)
+        return {
+          statusCode: 201,
+          body: aluno
+        }
       }
     }
   }
