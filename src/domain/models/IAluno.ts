@@ -1,4 +1,4 @@
-export interface IAuno {
+export interface IAluno {
   id: number
   cpf: string
   name?: string

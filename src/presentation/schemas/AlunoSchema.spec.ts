@@ -1,15 +1,15 @@
-import type { IAuno } from '../../domain/models/IAluno'
+import type { IAluno } from '../../domain/models/IAluno'
 import { AlunoSchema } from './AlunoSchema'
 
 interface SutTypes {
   sut: typeof AlunoSchema
-  aluno: IAuno
+  aluno: IAluno
 }
 
 const makeSut = (): SutTypes => {
   const sut = AlunoSchema
 
-  const aluno: IAuno = {
+  const aluno: IAluno = {
     id: 1,
     cpf: '12345678901',
     name: 'John Doe',
