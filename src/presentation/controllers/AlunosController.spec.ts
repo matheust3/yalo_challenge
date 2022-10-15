@@ -37,6 +37,26 @@ const makeSut = (): SutTypes => {
   return { sut, aluno, httpRequest, alunosRepository }
 }
 
+describe('AlunosController.spec.ts - del', () => {
+  let sut: SutTypes['sut']
+  let httpRequest: SutTypes['httpRequest']
+
+  beforeEach(() => {
+    ({ sut, httpRequest } = makeSut())
+
+    httpRequest.params = {}
+  })
+
+  test('ensure return 400 if id and cpf is undefined', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.del(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id" or "cpf" is required' })
+  })
+})
+
 describe('AlunosController.spec.ts - post', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']

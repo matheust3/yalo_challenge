@@ -7,6 +7,17 @@ export class AlunosController implements IController {
     private readonly _alunosRepository: IAlunoRepository
   ) {}
 
+  async del (httpRequest: IHttpRequest): Promise<IHttpResponse> {
+    if (httpRequest.params?.id === undefined && httpRequest.params?.cpf === undefined) {
+      return {
+        statusCode: 400,
+        body: { message: '"id" or "cpf" is required' }
+      }
+    } else {
+      throw Error('Method not implemented.')
+    }
+  }
+
   async post (httpRequest: IHttpRequest): Promise<IHttpResponse> {
     const { error, value } = AlunoSchema.validate(httpRequest.body)
     if (error !== undefined) {
