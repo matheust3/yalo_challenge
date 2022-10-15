@@ -90,4 +90,13 @@ describe('AlunosController.spec.ts - post', () => {
     expect(httpResponse.statusCode).toBe(201)
     expect(httpResponse.body).toEqual(aluno)
   })
+
+  test('ensure throws if repository throws', async () => {
+    //! Arrange
+    const error = new Error('error message')
+    alunosRepository.create.mockRejectedValueOnce(error)
+    //! Act
+    //! Assert
+    await expect(sut.post(httpRequest)).rejects.toThrow(error)
+  })
 })
