@@ -122,11 +122,14 @@ describe('AlunosController.spec.ts - del', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
   let alunoRepository: SutTypes['alunoRepository']
+  let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
 
     httpRequest.params = { id_turma: '1e3', id_colegio: '4', score: '4.0' }
+
+    alunoRepository.find.mockResolvedValue([aluno])
   })
 
   test('ensure return 400 if id_turma is not a integer', async () => {
@@ -183,6 +186,15 @@ describe('AlunosController.spec.ts - del', () => {
     await sut.get(httpRequest)
     //! Assert
     expect(alunoRepository.find).toHaveBeenCalledWith({ idTurma: 1000, idColegio: 4, score: 4.0 })
+  })
+
+  test('ensure return alunos array', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.get(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual([aluno])
   })
 })
 
