@@ -91,4 +91,13 @@ describe('GetByIdController.spec.ts - get', () => {
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(aluno)
   })
+
+  test('ensure throws if repository throws', async () => {
+    //! Arrange
+    const error = new Error('Repository error')
+    alunoRepository.getAluno.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.get(httpRequest)).rejects.toThrow(error)
+  })
 })
