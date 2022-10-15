@@ -201,3 +201,41 @@ describe('AlunoRepository.spec.ts - find', () => {
     await expect(sut.find({})).rejects.toThrowError(error)
   })
 })
+
+describe('AlunoRepository.spec.ts - getAluno', () => {
+  let sut: SutTypes['sut']
+  let prismaClient: SutTypes['prismaClient']
+  let aluno: SutTypes['aluno']
+
+  beforeEach(() => {
+    ({ sut, prismaClient, aluno } = makeSut())
+
+    prismaClient.alunos.findFirst.mockResolvedValue(
+      {
+        id: aluno.id,
+        cpf: aluno.cpf,
+        name: aluno.name ?? 'name',
+        email: aluno.email ?? 'name',
+        id_colegio: aluno.id_colegio,
+        id_turma: aluno.id_turma,
+        score: new Decimal(1)
+      }
+    )
+  })
+
+  test('ensure call prisma with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.getAluno({
+      id: aluno.id,
+      cpf: aluno.cpf
+    })
+    //! Assert
+    expect(prismaClient.alunos.findFirst).toBeCalledWith({
+      where: {
+        cpf: '12345678901',
+        id: 1
+      }
+    })
+  })
+})

@@ -58,6 +58,25 @@ export class AlunoRepository implements IAlunoRepository {
     }))
   }
 
-  getAluno: (params: { cpf?: string | undefined, id?: number | undefined }) => Promise<IAluno | undefined>
+  async getAluno (params: { cpf?: string, id?: number }): Promise<IAluno | undefined> {
+    const aluno = await this._prismaClient.alunos.findFirst({
+      where: {
+        cpf: params.cpf,
+        id: params.id
+      }
+    })
+    if (aluno !== null) {
+      return {
+        id: aluno.id,
+        cpf: aluno.cpf,
+        name: aluno.name ?? undefined,
+        email: aluno.email ?? undefined,
+        id_colegio: aluno.id_colegio,
+        id_turma: aluno.id_turma,
+        score: aluno.score?.toNumber() ?? undefined
+      }
+    }
+  }
+
   update: (aluno: IAluno) => Promise<IAluno>
 }
