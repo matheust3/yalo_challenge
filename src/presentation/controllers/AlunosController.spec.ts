@@ -137,4 +137,12 @@ describe('AlunosController.spec.ts - put', () => {
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
     expect(alunoSchemaMocked.AlunoSchema.validate).toHaveBeenCalledWith(httpRequest.body)
   })
+
+  test('ensure call repository with correct params', async () => {
+    //! Arrange
+    //! Act
+    await sut.put(httpRequest)
+    //! Assert
+    expect(alunosRepository.update).toHaveBeenCalledWith(httpRequest.body)
+  })
 })

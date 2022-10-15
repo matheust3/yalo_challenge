@@ -7,4 +7,11 @@ export interface IAlunoRepository {
    * @returns {Promise<IAluno>} Aluno created
    */
   create: (aluno: IAluno) => Promise<IAluno>
+
+  /**
+   * Update a Aluno
+   * @param {IAluno} aluno
+   * @returns {Promise<IAluno>} Aluno updated
+   */
+  update: (aluno: IAluno) => Promise<IAluno>
 }

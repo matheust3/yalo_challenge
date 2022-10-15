@@ -26,7 +26,7 @@ export class AlunosController implements IController {
   }
 
   async put (httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    const { error } = AlunoSchema.validate(httpRequest.body)
+    const { error, value } = AlunoSchema.validate(httpRequest.body)
     if (error !== undefined) {
       return {
         statusCode: 400,
@@ -35,7 +35,8 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      return { statusCode: 200, body: {} }
+      const aluno = await this._alunosRepository.update(value)
+      return { statusCode: 200, body: aluno }
     }
   }
 }
