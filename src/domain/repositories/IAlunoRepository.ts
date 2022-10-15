@@ -9,6 +9,13 @@ export interface IAlunoRepository {
   create: (aluno: IAluno) => Promise<IAluno>
 
   /**
+   * Delete a Aluno
+   * @param {number} id Aluno id
+   * @returns {Promise<void>}
+   */
+  delete: (id: number) => Promise<void>
+
+  /**
    * Get a Aluno by id or cpf
    * @param {number} id - Aluno id
    * @param {string} cpf - Aluno cpf

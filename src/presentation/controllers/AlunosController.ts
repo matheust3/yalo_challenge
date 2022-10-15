@@ -28,7 +28,8 @@ export class AlunosController implements IController {
             body: { message: 'Aluno not found' }
           }
         } else {
-          return { statusCode: 200, body: { message: 'Aluno deleted' } }
+          await this._alunoRepository.delete(id)
+          return { statusCode: 204, body: undefined }
         }
       }
     }

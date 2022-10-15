@@ -41,11 +41,14 @@ describe('AlunosController.spec.ts - del', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
   let alunoRepository: SutTypes['alunoRepository']
+  let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
 
     httpRequest.params = { id: '1e3', cpf: '12345678901' }
+
+    alunoRepository.getAluno.mockResolvedValue(aluno)
   })
 
   test('ensure return 400 if id is not a integer', async () => {
@@ -94,6 +97,16 @@ describe('AlunosController.spec.ts - del', () => {
     //! Assert
     expect(httpResponse.statusCode).toBe(404)
     expect(httpResponse.body).toEqual({ message: 'Aluno not found' })
+  })
+
+  test('ensure return 204 if delete aluno', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.del(httpRequest)
+    //! Assert
+    expect(alunoRepository.delete).toHaveBeenCalledWith(1000)
+    expect(httpResponse.statusCode).toBe(204)
+    expect(httpResponse.body).toBeUndefined()
   })
 })
 
