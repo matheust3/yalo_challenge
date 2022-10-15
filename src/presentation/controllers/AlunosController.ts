@@ -1,6 +1,7 @@
 import type { IController, IHttpRequest, IHttpResponse } from '../protocols'
 import { AlunoSchema } from '../schemas/AlunoSchema'
 import type { IAlunoRepository } from '../../domain/repositories/IAlunoRepository'
+import { FindParamsSchema } from '../schemas/FindParamsSchema'
 
 export class AlunosController implements IController {
   constructor (
@@ -36,41 +37,18 @@ export class AlunosController implements IController {
   }
 
   async get (httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    let idTurma: number | undefined
-    let idColegio: number | undefined
-    let score: number | undefined
-    if (httpRequest.params?.id_turma !== undefined) {
-      idTurma = Number(httpRequest.params?.id_turma)
-      if (idTurma !== parseInt(idTurma.toString(), 10)) {
-        return {
-          statusCode: 400,
-          body: { message: '"id_turma" must be a integer' }
-        }
+    const { error, value } = FindParamsSchema.validate(httpRequest.params)
+    if (error !== undefined) {
+      return {
+        statusCode: 400,
+        body: { message: error.message }
       }
-    }
-    if (httpRequest.params?.id_colegio !== undefined) {
-      idColegio = Number(httpRequest.params?.id_colegio)
-      if (idColegio !== parseInt(idColegio.toString(), 10)) {
-        return {
-          statusCode: 400,
-          body: { message: '"id_colegio" must be a integer' }
-        }
+    } else {
+      const alunos = await this._alunoRepository.find({ idColegio: value.id_colegio, idTurma: value.id_turma, score: value.score })
+      return {
+        statusCode: 200,
+        body: alunos
       }
-    }
-    if (httpRequest.params?.score !== undefined) {
-      score = Number(httpRequest.params?.id_colegio)
-      if (isNaN(score)) {
-        return {
-          statusCode: 400,
-          body: { message: '"score" must be a number' }
-        }
-      }
-    }
-
-    const alunos = await this._alunoRepository.find({ idColegio, idTurma, score })
-    return {
-      statusCode: 200,
-      body: alunos
     }
   }
 

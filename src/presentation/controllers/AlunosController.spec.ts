@@ -139,7 +139,7 @@ describe('AlunosController.spec.ts - get', () => {
     const httpResponse = await sut.get(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual({ message: '"id_turma" must be a integer' })
+    expect(httpResponse.body).toEqual({ message: '"id_turma" must be an integer' })
   })
 
   test('ensure return 400 if id_turma is a string', async () => {
@@ -149,7 +149,7 @@ describe('AlunosController.spec.ts - get', () => {
     const httpResponse = await sut.get(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual({ message: '"id_turma" must be a integer' })
+    expect(httpResponse.body).toEqual({ message: '"id_turma" must be a number' })
   })
   test('ensure return 400 if id_colegio is not a integer', async () => {
     //! Arrange
@@ -158,7 +158,7 @@ describe('AlunosController.spec.ts - get', () => {
     const httpResponse = await sut.get(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a integer' })
+    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be an integer' })
   })
 
   test('ensure return 400 if id_colegio is a string', async () => {
@@ -168,7 +168,7 @@ describe('AlunosController.spec.ts - get', () => {
     const httpResponse = await sut.get(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a integer' })
+    expect(httpResponse.body).toEqual({ message: '"id_colegio" must be a number' })
   })
   test('ensure return 400 if score is not a number', async () => {
     //! Arrange
