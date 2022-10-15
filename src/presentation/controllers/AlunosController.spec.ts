@@ -48,6 +48,8 @@ describe('AlunosController.spec.ts - post', () => {
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
+
+    alunosRepository.create.mockResolvedValue(aluno)
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -78,5 +80,14 @@ describe('AlunosController.spec.ts - post', () => {
     await sut.post(httpRequest)
     //! Assert
     expect(alunosRepository.create).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('ensure return created aluno', async () => {
+    //! Arrange
+    //! Act
+    const httpResponse = await sut.post(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(201)
+    expect(httpResponse.body).toEqual(aluno)
   })
 })
