@@ -12,5 +12,5 @@
     "prisma.prisma"
   ],
   "workspaceFolder": "/home/developer/yalo_dev",
-  "postStartCommand": "npm install -g npm"
+  "postStartCommand": "npm install -g npm && npm i && npx prisma generate"
 }
