@@ -10,7 +10,7 @@ interface SutTypes {
   sut: AlunosController
   httpRequest: IHttpRequest
   aluno: IAluno
-  alunosRepository: MockProxy<IAlunoRepository> & IAlunoRepository
+  alunoRepository: MockProxy<IAlunoRepository> & IAlunoRepository
 }
 
 jest.mock('../schemas/AlunoSchema')
@@ -30,11 +30,11 @@ const makeSut = (): SutTypes => {
     body: aluno
   }
 
-  const alunosRepository = mock<IAlunoRepository>()
+  const alunoRepository = mock<IAlunoRepository>()
 
-  const sut = new AlunosController(alunosRepository)
+  const sut = new AlunosController(alunoRepository)
 
-  return { sut, aluno, httpRequest, alunosRepository }
+  return { sut, aluno, httpRequest, alunoRepository }
 }
 
 describe('AlunosController.spec.ts - del', () => {
@@ -44,11 +44,32 @@ describe('AlunosController.spec.ts - del', () => {
   beforeEach(() => {
     ({ sut, httpRequest } = makeSut())
 
-    httpRequest.params = {}
+    httpRequest.params = { id: '1', cpf: '12345678901' }
+  })
+
+  test('ensure return 400 if id is not a integer', async () => {
+    //! Arrange
+    httpRequest.params = { id: '1.1', cpf: '12345678901' }
+    //! Act
+    const httpResponse = await sut.del(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id" must be a integer' })
+  })
+
+  test('ensure return 400 if id is string', async () => {
+    //! Arrange
+    httpRequest.params = { id: 'string', cpf: '12345678901' }
+    //! Act
+    const httpResponse = await sut.del(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual({ message: '"id" must be a integer' })
   })
 
   test('ensure return 400 if id and cpf is undefined', async () => {
     //! Arrange
+    httpRequest.params = { }
     //! Act
     const httpResponse = await sut.del(httpRequest)
     //! Assert
@@ -60,11 +81,11 @@ describe('AlunosController.spec.ts - del', () => {
 describe('AlunosController.spec.ts - post', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
-  let alunosRepository: SutTypes['alunosRepository']
+  let alunosRepository: SutTypes['alunoRepository']
   let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunosRepository, aluno } = makeSut())
+    ({ sut, httpRequest, alunoRepository: alunosRepository, aluno } = makeSut())
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
@@ -124,11 +145,11 @@ describe('AlunosController.spec.ts - post', () => {
 describe('AlunosController.spec.ts - put', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
-  let alunosRepository: SutTypes['alunosRepository']
+  let alunosRepository: SutTypes['alunoRepository']
   let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunosRepository, aluno } = makeSut())
+    ({ sut, httpRequest, alunoRepository: alunosRepository, aluno } = makeSut())
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })

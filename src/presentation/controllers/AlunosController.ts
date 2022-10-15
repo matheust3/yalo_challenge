@@ -4,7 +4,7 @@ import type { IAlunoRepository } from '../../domain/repositories/IAlunoRepositor
 
 export class AlunosController implements IController {
   constructor (
-    private readonly _alunosRepository: IAlunoRepository
+    private readonly _alunoRepository: IAlunoRepository
   ) {}
 
   async del (httpRequest: IHttpRequest): Promise<IHttpResponse> {
@@ -14,7 +14,15 @@ export class AlunosController implements IController {
         body: { message: '"id" or "cpf" is required' }
       }
     } else {
-      throw Error('Method not implemented.')
+      const id = Number(httpRequest.params?.id)
+      if (id !== parseInt(id.toString(), 10)) {
+        return {
+          statusCode: 400,
+          body: { message: '"id" must be a integer' }
+        }
+      } else {
+        return { statusCode: 200, body: { message: 'Aluno deleted' } }
+      }
     }
   }
 
@@ -28,7 +36,7 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const aluno = await this._alunosRepository.create(value)
+      const aluno = await this._alunoRepository.create(value)
       return {
         statusCode: 201,
         body: aluno
@@ -46,7 +54,7 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const aluno = await this._alunosRepository.update(value)
+      const aluno = await this._alunoRepository.update(value)
       return { statusCode: 200, body: aluno }
     }
   }
