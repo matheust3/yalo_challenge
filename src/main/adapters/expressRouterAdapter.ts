@@ -14,7 +14,7 @@ export const expressRouterAdapter = (path: string, router: express.Router, contr
         // Converte o request do express para o request do controller
         const httpRequest: IHttpRequest = {
           body: req.body,
-          params: req.params
+          params: req.query
         }
         // Executa o método do controller
         controller[key]?.(httpRequest).then(httpResponse => {
