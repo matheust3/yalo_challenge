@@ -62,19 +62,22 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const alunos = await this._alunoRepository.find({ cpf: value.cpf, id: value.id })
-      if (alunos.length > 0) {
-        return {
-          statusCode: 409,
-          body: {
-            message: 'cpf or id is already in use'
-          }
-        }
-      } else {
+      const alunos = await this._alunoRepository.find({ cpf: value.cpf })
+      alunos.concat(await this._alunoRepository.find({ id: value.id }))
+      const sameId = alunos.find(aluno => aluno.id === value.id)
+      const sameCpf = alunos.find(aluno => aluno.cpf === value.cpf)
+      if (sameId === undefined && sameCpf === undefined) {
         const aluno = await this._alunoRepository.create(value)
         return {
           statusCode: 201,
           body: aluno
+        }
+      } else {
+        return {
+          statusCode: 409,
+          body: {
+            message: `${(sameId !== undefined) ? 'id' : 'cpf'} is already in use`
+          }
         }
       }
     }
