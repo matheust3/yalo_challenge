@@ -209,4 +209,13 @@ describe('alunos-route.test.ts - put', () => {
     //! Assert
     expect(result.body).toEqual(alunoUpdated)
   })
+
+  test('ensure return error if aluno not exists', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).put('/api/alunos').send(aluno)
+    //! Assert
+    expect(result.body).toEqual({ message: 'aluno not found' })
+    expect(result.status).toBe(404)
+  })
 })
