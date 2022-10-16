@@ -78,4 +78,14 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.body).toEqual(aluno)
     expect(result.status).toBe(201)
   })
+
+  test('ensure not create a aluno with invalid cpf', async () => {
+    //! Arrange
+    aluno.cpf = '1234567890'
+    //! Act
+    const result = await supertest(app).post('/api/alunos').send(aluno)
+    //! Assert
+    expect(result.body).toEqual({ message: '"cpf" length must be 11 characters long' })
+    expect(result.status).toBe(400)
+  })
 })
