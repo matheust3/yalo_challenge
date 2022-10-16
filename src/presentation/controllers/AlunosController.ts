@@ -62,8 +62,10 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const alunos = await this._alunoRepository.find({ cpf: value.cpf })
-      alunos.concat(await this._alunoRepository.find({ id: value.id }))
+      const alunos = [
+        ...await this._alunoRepository.find({ cpf: value.cpf }),
+        ...await this._alunoRepository.find({ id: value.id })
+      ]
       const sameId = alunos.find(aluno => aluno.id === value.id)
       const sameCpf = alunos.find(aluno => aluno.cpf === value.cpf)
       if (sameId === undefined && sameCpf === undefined) {

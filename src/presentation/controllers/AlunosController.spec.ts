@@ -271,7 +271,9 @@ describe('AlunosController.spec.ts - post', () => {
 
   test('ensure return error if cpf is already in use', async () => {
     //! Arrange
-    alunoRepository.find.mockResolvedValue([{ ...aluno, id: aluno.id + 1 }])
+    alunoRepository.find
+      .mockResolvedValueOnce([{ ...aluno, id: aluno.id + 1 }])
+      .mockResolvedValueOnce([])
     //! Act
     const httpResponse = await sut.post(httpRequest)
     //! Assert
@@ -281,7 +283,9 @@ describe('AlunosController.spec.ts - post', () => {
 
   test('ensure return error if id is already in use', async () => {
     //! Arrange
-    alunoRepository.find.mockResolvedValue([{ ...aluno, id: aluno.id, cpf: '00000000000' }])
+    alunoRepository.find
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([{ ...aluno, id: aluno.id, cpf: '01234567892' }])
     //! Act
     const httpResponse = await sut.post(httpRequest)
     //! Assert
