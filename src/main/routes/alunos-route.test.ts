@@ -108,4 +108,15 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.body).toEqual({ message: '"id_turma" must be a positive number' })
     expect(result.status).toBe(400)
   })
+
+  test('ensure id is required', async () => {
+    //! Arrange
+    const alunoWithoutId: object & { id?: number } = { ...aluno }
+    delete alunoWithoutId.id
+    //! Act
+    const result = await supertest(app).post('/api/alunos').send(alunoWithoutId)
+    //! Assert
+    expect(result.body).toEqual({ message: '"id" is required' })
+    expect(result.status).toBe(400)
+  })
 })
