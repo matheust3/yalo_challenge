@@ -182,6 +182,33 @@ describe('AlunoRepository.spec.ts - find', () => {
     })
   })
 
+  test('ensure return aluno without name if prisma return name null', async () => {
+    //! Arrange
+    prismaClient.alunos.findMany.mockResolvedValueOnce([mock<Alunos>({ name: null, score: new Decimal(1) })])
+    //! Act
+    const result = await sut.find({})
+    //! Assert
+    expect(result[0]?.name).toBeUndefined()
+  })
+
+  test('ensure return aluno without email if prisma return email null', async () => {
+    //! Arrange
+    prismaClient.alunos.findMany.mockResolvedValueOnce([mock<Alunos>({ email: null, score: new Decimal(1) })])
+    //! Act
+    const result = await sut.find({})
+    //! Assert
+    expect(result[0]?.email).toBeUndefined()
+  })
+
+  test('ensure return aluno without score if prisma return score null', async () => {
+    //! Arrange
+    prismaClient.alunos.findMany.mockResolvedValueOnce([mock<Alunos>({ score: null })])
+    //! Act
+    const result = await sut.find({})
+    //! Assert
+    expect(result[0]?.score).toBeUndefined()
+  })
+
   test('ensure return result', async () => {
     //! Arrange
     const expectedAluno = { ...aluno, ...{ _isMockObject: undefined } }
