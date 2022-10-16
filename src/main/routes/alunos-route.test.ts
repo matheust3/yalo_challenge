@@ -88,4 +88,14 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.body).toEqual({ message: '"cpf" length must be 11 characters long' })
     expect(result.status).toBe(400)
   })
+
+  test('ensure not create a aluno with invalid id_colegio', async () => {
+    //! Arrange
+    aluno.id_colegio = 0
+    //! Act
+    const result = await supertest(app).post('/api/alunos').send(aluno)
+    //! Assert
+    expect(result.body).toEqual({ message: '"id_colegio" must be a positive number' })
+    expect(result.status).toBe(400)
+  })
 })
