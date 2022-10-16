@@ -333,6 +333,7 @@ describe('AlunosController.spec.ts - put', () => {
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
 
     alunosRepository.update.mockResolvedValue(aluno)
+    alunosRepository.find.mockResolvedValue([aluno])
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -381,5 +382,23 @@ describe('AlunosController.spec.ts - put', () => {
     //! Act
     //! Assert
     await expect(sut.put(httpRequest)).rejects.toThrow(error)
+  })
+
+  test('ensure check if aluno exists', async () => {
+    //! Arrange
+    //! Act
+    await sut.put(httpRequest)
+    //! Assert
+    expect(alunosRepository.find).toHaveBeenCalledWith({ id: aluno.id })
+  })
+
+  test('ensure return error if aluno not found', async () => {
+    //! Arrange
+    alunosRepository.find.mockResolvedValue([])
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual({ message: 'aluno not found' })
   })
 })

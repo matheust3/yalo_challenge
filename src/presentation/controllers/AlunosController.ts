@@ -95,8 +95,17 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const aluno = await this._alunoRepository.update(value)
-      return { statusCode: 200, body: aluno }
+      if ((await this._alunoRepository.find({ id: value.id })).length !== 0) {
+        const aluno = await this._alunoRepository.update(value)
+        return { statusCode: 200, body: aluno }
+      } else {
+        return {
+          statusCode: 404,
+          body: {
+            message: 'aluno not found'
+          }
+        }
+      }
     }
   }
 }
