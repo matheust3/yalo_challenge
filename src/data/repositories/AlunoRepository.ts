@@ -78,5 +78,27 @@ export class AlunoRepository implements IAlunoRepository {
     }
   }
 
-  update: (aluno: IAluno) => Promise<IAluno>
+  async update (aluno: IAluno): Promise<IAluno> {
+    const result = await this._prismaClient.alunos.update({
+      where: { id: aluno.id },
+      data: {
+        cpf: aluno.cpf,
+        name: aluno.name,
+        email: aluno.email,
+        id_colegio: aluno.id_colegio,
+        id_turma: aluno.id_turma,
+        score: aluno.score
+      }
+    })
+
+    return {
+      id: result.id,
+      cpf: result.cpf,
+      name: result.name ?? undefined,
+      email: result.email ?? undefined,
+      id_colegio: result.id_colegio,
+      id_turma: result.id_turma,
+      score: result.score?.toNumber() ?? undefined
+    }
+  }
 }
