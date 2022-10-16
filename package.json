@@ -6,12 +6,13 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "build-ci": "rimraf ci && prisma generate --schema ./prisma/ci.prisma && npx prisma db push --schema ./prisma/ci.prisma",
+    "test": "npm run build-ci && npx jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit.config.js",
     "test:integration": "npm test -- --watch -c jest-integration.config.js",
     "test:ci": "npm test -- --coverage --detectOpenHandles",
     "test:staged": "npm test -- --findRelatedTests",
-    "test:verbose": "jest --passWithNoTests --runInBand"
+    "test:verbose": "npm run build-ci && npx jest --passWithNoTests --runInBand"
   },
   "keywords": [],
   "license": "ISC",
