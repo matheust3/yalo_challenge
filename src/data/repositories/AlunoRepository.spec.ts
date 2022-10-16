@@ -370,4 +370,13 @@ describe('AlunoRepository.spec.ts - update', () => {
     //! Assert
     expect(result).toEqual(expectedAluno)
   })
+
+  test('ensure throws if prisma throws', async () => {
+    //! Arrange
+    const error = new Error('error')
+    prismaClient.alunos.update.mockRejectedValue(error)
+    //! Act
+    //! Assert
+    await expect(sut.update(aluno)).rejects.toThrowError(error)
+  })
 })
