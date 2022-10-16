@@ -208,6 +208,7 @@ describe('alunos-route.test.ts - put', () => {
     const result = await supertest(app).put('/api/alunos').send(alunoUpdated)
     //! Assert
     expect(result.body).toEqual(alunoUpdated)
+    expect(result.status).toBe(200)
   })
 
   test('ensure return error if aluno not exists', async () => {
@@ -217,5 +218,15 @@ describe('alunos-route.test.ts - put', () => {
     //! Assert
     expect(result.body).toEqual({ message: 'aluno not found' })
     expect(result.status).toBe(404)
+  })
+
+  test('ensure not change aluno if data not change', async () => {
+    //! Arrange
+    const alunoCreated = await createAluno(aluno)
+    //! Act
+    const result = await supertest(app).put('/api/alunos').send(alunoCreated)
+    //! Assert
+    expect(result.body).toEqual(alunoCreated)
+    expect(result.status).toBe(200)
   })
 })
