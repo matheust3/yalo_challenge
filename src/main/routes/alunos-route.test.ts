@@ -119,4 +119,14 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.body).toEqual({ message: '"id" is required' })
     expect(result.status).toBe(400)
   })
+  test('ensure cpf is required', async () => {
+    //! Arrange
+    const alunoWithoutCpf: object & { cpf?: string } = { ...aluno }
+    delete alunoWithoutCpf.cpf
+    //! Act
+    const result = await supertest(app).post('/api/alunos').send(alunoWithoutCpf)
+    //! Assert
+    expect(result.body).toEqual({ message: '"cpf" is required' })
+    expect(result.status).toBe(400)
+  })
 })
