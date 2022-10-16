@@ -40,4 +40,17 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.body).toEqual(aluno)
     expect(result.status).toBe(201)
   })
+
+  test('ensure not create two alunos with same cpf', async () => {
+    //! Arrange
+    const aluno2 = { ...aluno, id: 2 }
+    //! Act
+    const result1 = await supertest(app).post('/api/alunos').send(aluno)
+    const result2 = await supertest(app).post('/api/alunos').send(aluno2)
+    //! Assert
+    expect(result1.body).toEqual(aluno)
+    expect(result1.status).toBe(201)
+    expect(result2.body).toEqual({ message: 'cpf is already in use' })
+    expect(result2.status).toBe(409)
+  })
 })
