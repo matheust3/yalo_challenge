@@ -66,4 +66,16 @@ describe('alunos-route.test.ts - post', () => {
     expect(result2.body).toEqual({ message: 'id is already in use' })
     expect(result2.status).toBe(409)
   })
+
+  test('ensure create a aluno without name, email and score', async () => {
+    //! Arrange
+    delete aluno.name
+    delete aluno.email
+    delete aluno.score
+    //! Act
+    const result = await supertest(app).post('/api/alunos').send(aluno)
+    //! Assert
+    expect(result.body).toEqual(aluno)
+    expect(result.status).toBe(201)
+  })
 })
