@@ -150,3 +150,63 @@ describe('alunos-route.test.ts - post', () => {
     expect(result.status).toBe(400)
   })
 })
+
+describe('alunos-route.test.ts - put', () => {
+  let app: Express
+  let prismaClient: PrismaClient.PrismaClient
+  let aluno: IAluno
+
+  const createAluno = async (aluno: IAluno): Promise<IAluno> => {
+    const result = await supertest(app).post('/api/alunos').send(aluno)
+    expect(result.status).toBe(201)
+    expect(result.body).toEqual(aluno)
+    return result.body
+  }
+
+  beforeAll(async () => {
+    // Inicializa os servidor com um banco de dados fake
+    app = (await import('../config/app')).default
+    prismaClient = new PrismaClient.PrismaClient()
+  })
+
+  beforeEach(async () => {
+    // Limpa o banco de dados antes de cada teste
+    await prismaClient.alunos.deleteMany()
+
+    aluno = {
+      id: 1,
+      name: 'Aluno 1',
+      email: 'email@domain.com',
+      cpf: '12345678901',
+      id_colegio: 1,
+      id_turma: 1,
+      score: 0
+    }
+  })
+
+  test('ensure create aluno works', async () => {
+    //! Arrange
+    //! Act
+    const alunoCreated = await createAluno(aluno)
+    //! Assert
+    expect(alunoCreated).toEqual(aluno)
+  })
+
+  test('ensure update aluno', async () => {
+    //! Arrange
+    const alunoCreated = await createAluno(aluno)
+    const alunoUpdated: IAluno = {
+      id: alunoCreated.id,
+      cpf: '12345678902',
+      name: 'Aluno 2',
+      email: 'email2@d.com',
+      id_colegio: 2,
+      id_turma: 2,
+      score: 10
+    }
+    //! Act
+    const result = await supertest(app).put('/api/alunos').send(alunoUpdated)
+    //! Assert
+    expect(result.body).toEqual(alunoUpdated)
+  })
+})
