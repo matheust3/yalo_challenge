@@ -333,4 +333,41 @@ describe('AlunoRepository.spec.ts - update', () => {
       }
     })
   })
+
+  test('ensure return aluno without name if prisma return name null', async () => {
+    //! Arrange
+    prismaClient.alunos.update.mockResolvedValueOnce(mock<Alunos>({ name: null, score: new Decimal(1) }))
+    //! Act
+    const result = await sut.update(aluno)
+    //! Assert
+    expect(result?.name).toBeUndefined()
+  })
+
+  test('ensure return aluno without email if prisma return email null', async () => {
+    //! Arrange
+    prismaClient.alunos.update.mockResolvedValueOnce(mock<Alunos>({ email: null, score: new Decimal(1) }))
+    //! Act
+    const result = await sut.update(aluno)
+    //! Assert
+    expect(result?.email).toBeUndefined()
+  })
+
+  test('ensure return aluno without score if prisma return score null', async () => {
+    //! Arrange
+    prismaClient.alunos.update.mockResolvedValueOnce(mock<Alunos>({ score: null }))
+    //! Act
+    const result = await sut.update(aluno)
+    //! Assert
+    expect(result?.score).toBeUndefined()
+  })
+
+  test('ensure return result', async () => {
+    //! Arrange
+    const expectedAluno = { ...aluno, ...{ _isMockObject: undefined } }
+    delete expectedAluno._isMockObject
+    //! Act
+    const result = await sut.update(aluno)
+    //! Assert
+    expect(result).toEqual(expectedAluno)
+  })
 })
