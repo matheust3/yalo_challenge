@@ -5,8 +5,9 @@
   "description": "A yalo challenge",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && prisma generate",
     "build-ci": "rimraf ci && prisma generate --schema ./prisma/ci.prisma && npx prisma db push --schema ./prisma/ci.prisma",
+    "start": "node dist/main/server.js",
     "test": "npm run build-ci && npx jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit.config.js",
     "test:integration": "npm test -- --watch -c jest-integration.config.js",
