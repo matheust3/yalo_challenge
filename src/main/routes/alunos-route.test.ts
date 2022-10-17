@@ -137,6 +137,17 @@ describe('alunos-route.test.ts - get', () => {
     //! Assert
     expect(result.body).toEqual([a1, a2, a3])
   })
+
+  test('ensure list all alunos sorted by id', async () => {
+    //! Arrange
+    const a3 = await createAluno({ ...aluno, id: 3, cpf: '12345678903', score: 8, name: 'Aluno 3', id_colegio: 3, id_turma: 3 })
+    const a2 = await createAluno({ ...aluno, id: 2, cpf: '12345678902', score: 9, name: 'Aluno 2', id_colegio: 2, id_turma: 2 })
+    const a1 = await createAluno(aluno)
+    //! Act
+    const result = await supertest(app).get('/api/alunos')
+    //! Assert
+    expect(result.body).toEqual([a1, a2, a3])
+  })
 })
 
 describe('alunos-route.test.ts - post', () => {
