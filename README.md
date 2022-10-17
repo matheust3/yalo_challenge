@@ -67,7 +67,7 @@ Iniciei o servidor
 
 ### Listagem dos alunos
 
-```http
+```
   GET /api/alunos
 ```
 
@@ -79,7 +79,7 @@ Iniciei o servidor
 
 ### Cadastro
 
-```http
+```
   POST /api/alunos
 ```
 body -> application/json
@@ -98,7 +98,7 @@ body -> application/json
 
 ### Exclusão
 
-```http
+```
   DELETE /api/alunos
 ```
 
@@ -109,12 +109,12 @@ body -> application/json
 
 ### Atualização
 
-```http
+```
   PUT /api/alunos
 ```
 body -> application/json
 
-```json
+```
 {
     "id": int, (obrigatório)
     "cpf": string, (obrigatório)
@@ -128,7 +128,7 @@ body -> application/json
 
 ### Busca (getById)
 
-```http
+```
   GET /api/alunos/get-by-id
 ```
 
