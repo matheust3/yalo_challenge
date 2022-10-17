@@ -81,6 +81,15 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.body).toEqual({ message: '"id" or "cpf" is required' })
   })
 
+  test('ensure check if aluno exists if id is undefined', async () => {
+    //! Arrange
+    httpRequest.params = { cpf: '12345678901' }
+    //! Act
+    await sut.del(httpRequest)
+    //! Assert
+    expect(alunoRepository.getAluno).toHaveBeenCalledWith({ cpf: '12345678901' })
+  })
+
   test('ensure check if aluno exists', async () => {
     //! Arrange
     //! Act
@@ -101,10 +110,11 @@ describe('AlunosController.spec.ts - del', () => {
 
   test('ensure return 204 if delete aluno', async () => {
     //! Arrange
+    alunoRepository.getAluno.mockResolvedValue({ ...aluno, id: 4546 })
     //! Act
     const httpResponse = await sut.del(httpRequest)
     //! Assert
-    expect(alunoRepository.delete).toHaveBeenCalledWith(1000)
+    expect(alunoRepository.delete).toHaveBeenCalledWith(4546)
     expect(httpResponse.statusCode).toBe(204)
     expect(httpResponse.body).toBeUndefined()
   })

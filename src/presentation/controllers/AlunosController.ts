@@ -9,27 +9,28 @@ export class AlunosController implements IController {
   ) {}
 
   async del (httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    if (httpRequest.params?.id === undefined && httpRequest.params?.cpf === undefined) {
+    if (typeof httpRequest.params?.id !== 'string' && typeof httpRequest.params?.cpf !== 'string') {
       return {
         statusCode: 400,
         body: { message: '"id" or "cpf" is required' }
       }
     } else {
-      const id = Number(httpRequest.params?.id)
-      if (id !== parseInt(id.toString(), 10)) {
+      const id = typeof httpRequest.params?.id === 'string' ? Number(httpRequest.params?.id) : undefined
+      const cpf = typeof httpRequest.params?.cpf === 'string' ? httpRequest.params?.cpf : undefined
+      if (id !== undefined && id !== parseInt(id.toString(), 10)) {
         return {
           statusCode: 400,
           body: { message: '"id" must be a integer' }
         }
       } else {
-        const aluno = await this._alunoRepository.getAluno({ cpf: httpRequest.params?.cpf, id })
+        const aluno = await this._alunoRepository.getAluno({ cpf, id })
         if (aluno === undefined) {
           return {
             statusCode: 404,
             body: { message: 'Aluno not found' }
           }
         } else {
-          await this._alunoRepository.delete(id)
+          await this._alunoRepository.delete(aluno.id)
           return { statusCode: 204, body: undefined }
         }
       }
