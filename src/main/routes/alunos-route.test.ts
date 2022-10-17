@@ -439,4 +439,15 @@ describe('alunos-route.test.ts - put', () => {
     expect(result.body).toEqual(alunoCreated)
     expect(result.status).toBe(200)
   })
+
+  test('ensure cpf conflict check', async () => {
+    //! Arrange
+    const alunoCreated = await createAluno(aluno)
+    await createAluno({ ...aluno, id: 2, cpf: '12345678902' })
+    //! Act
+    const result = await supertest(app).put('/api/alunos').send({ ...alunoCreated, cpf: '12345678902' })
+    //! Assert
+    expect(result.body).toEqual({ message: 'cpf is already in use by another aluno' })
+    expect(result.status).toBe(409)
+  })
 })
