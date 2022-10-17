@@ -27,6 +27,7 @@ export const expressRouterAdapter = (path: string, router: express.Router, contr
           } else {
             res.status(500).json({ error: 'Internal server error' })
           }
+          console.error(error)
         })
       })
     }
