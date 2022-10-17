@@ -7,6 +7,7 @@
 - Deixei um devcontainer já com o banco de dados configurado (usar a `DATABASE_URL` do `env_example` se for usar esse container)
 - Após a instalação das dependências e com a variável `DATABASE_URL` configurada, basta rodar `npx prisma db push` para criar os objetos no banco de dados (sem que seja necessário o uso do arquivo `.sql`)
 - Defina a variável de ambiente `PORT` para alterar a porta do servidor (default 3000)
+- Versão do Node: 16.13.2
 
 Obs.: Utilizei SQLite pra os testes de integração
 
