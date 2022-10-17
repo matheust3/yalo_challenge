@@ -2,3 +2,5 @@ node_modules
 .devcontainer/database
 .env
 coverage
+ci
+dist

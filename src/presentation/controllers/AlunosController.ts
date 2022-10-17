@@ -9,27 +9,28 @@ export class AlunosController implements IController {
   ) {}
 
   async del (httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    if (httpRequest.params?.id === undefined && httpRequest.params?.cpf === undefined) {
+    if (typeof httpRequest.params?.id !== 'string' && typeof httpRequest.params?.cpf !== 'string') {
       return {
         statusCode: 400,
         body: { message: '"id" or "cpf" is required' }
       }
     } else {
-      const id = Number(httpRequest.params?.id)
-      if (id !== parseInt(id.toString(), 10)) {
+      const id = typeof httpRequest.params?.id === 'string' ? Number(httpRequest.params?.id) : undefined
+      const cpf = typeof httpRequest.params?.cpf === 'string' ? httpRequest.params?.cpf : undefined
+      if (id !== undefined && id !== parseInt(id.toString(), 10)) {
         return {
           statusCode: 400,
           body: { message: '"id" must be a integer' }
         }
       } else {
-        const aluno = await this._alunoRepository.getAluno({ cpf: httpRequest.params?.cpf, id })
+        const aluno = await this._alunoRepository.getAluno({ cpf, id })
         if (aluno === undefined) {
           return {
             statusCode: 404,
             body: { message: 'Aluno not found' }
           }
         } else {
-          await this._alunoRepository.delete(id)
+          await this._alunoRepository.delete(aluno.id)
           return { statusCode: 204, body: undefined }
         }
       }
@@ -62,19 +63,24 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const alunos = await this._alunoRepository.find({ cpf: value.cpf, id: value.id })
-      if (alunos.length > 0) {
-        return {
-          statusCode: 409,
-          body: {
-            message: 'cpf or id is already in use'
-          }
-        }
-      } else {
+      const alunos = [
+        ...await this._alunoRepository.find({ cpf: value.cpf }),
+        ...await this._alunoRepository.find({ id: value.id })
+      ]
+      const sameId = alunos.find(aluno => aluno.id === value.id)
+      const sameCpf = alunos.find(aluno => aluno.cpf === value.cpf)
+      if (sameId === undefined && sameCpf === undefined) {
         const aluno = await this._alunoRepository.create(value)
         return {
           statusCode: 201,
           body: aluno
+        }
+      } else {
+        return {
+          statusCode: 409,
+          body: {
+            message: `${(sameId !== undefined) ? 'id' : 'cpf'} is already in use`
+          }
         }
       }
     }
@@ -90,8 +96,17 @@ export class AlunosController implements IController {
         }
       }
     } else {
-      const aluno = await this._alunoRepository.update(value)
-      return { statusCode: 200, body: aluno }
+      if ((await this._alunoRepository.find({ id: value.id })).length !== 0) {
+        const aluno = await this._alunoRepository.update(value)
+        return { statusCode: 200, body: aluno }
+      } else {
+        return {
+          statusCode: 404,
+          body: {
+            message: 'aluno not found'
+          }
+        }
+      }
     }
   }
 }
