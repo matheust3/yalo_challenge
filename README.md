@@ -3,9 +3,10 @@
 
 ## Notas:
 
-- É necessário criar uma variável de ambiente `DATABASE_URL` com a url de conexão do banco de dados. Ou então criar um arquivo `.env` com essa variavel na raiz do projeto **(já deixei um arquivo `env_example` que pode ser renomeado)**
+- É necessário criar uma variável de ambiente `DATABASE_URL` com a url de conexão do banco de dados. Ou então criar um arquivo `.env` com essa variável na raiz do projeto **(já deixei um arquivo `env_example` que pode ser renomeado)**
 - Deixei um devcontainer já com o banco de dados configurado (usar a `DATABASE_URL` do `env_example` se for usar esse container)
 - Após a instalação das dependências e com a variável `DATABASE_URL` configurada, basta rodar `npx prisma db push` para criar os objetos no banco de dados (sem que seja necessário o uso do arquivo `.sql`)
+- Defina a variável de ambiente `PORT` para alterar a porta do servidor (default 3000)
 
 Obs.: Utilizei SQLite pra os testes de integração
 
