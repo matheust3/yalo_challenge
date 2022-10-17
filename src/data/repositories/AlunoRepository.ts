@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '../../../prisma-client'
 import type { IAluno } from '../../domain/models/IAluno'
 import type { IAlunoRepository } from '../../domain/repositories/IAlunoRepository'
 

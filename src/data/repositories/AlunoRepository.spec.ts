@@ -1,8 +1,8 @@
 import { AlunoRepository } from './AlunoRepository'
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended'
-import { Alunos, PrismaClient } from '@prisma/client'
+import { Alunos, PrismaClient } from '../../../prisma-client'
 import { IAluno } from '../../domain/models/IAluno'
-import { Decimal } from '@prisma/client/runtime'
+import { Decimal } from '../../../prisma-client/runtime'
 
 interface SutTypes {
   sut: AlunoRepository

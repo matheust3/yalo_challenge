@@ -4,7 +4,7 @@ import supertest from 'supertest'
 import { IAluno } from '../../../domain/models/IAluno'
 
 // Mock the PrismaClient singleton
-jest.mock('@prisma/client', () => PrismaClient)
+jest.mock('../../../../prisma-client', () => PrismaClient)
 
 describe('alunos-route.test.ts - get', () => {
   let app: Express
