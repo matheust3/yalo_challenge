@@ -333,17 +333,17 @@ describe('AlunosController.spec.ts - post', () => {
 describe('AlunosController.spec.ts - put', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
-  let alunosRepository: SutTypes['alunoRepository']
+  let alunoRepository: SutTypes['alunoRepository']
   let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository: alunosRepository, aluno } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
 
-    alunosRepository.update.mockResolvedValue(aluno)
-    alunosRepository.find.mockResolvedValue([aluno])
+    alunoRepository.update.mockResolvedValue(aluno)
+    alunoRepository.find.mockResolvedValue([aluno])
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -373,7 +373,7 @@ describe('AlunosController.spec.ts - put', () => {
     //! Act
     await sut.put(httpRequest)
     //! Assert
-    expect(alunosRepository.update).toHaveBeenCalledWith(httpRequest.body)
+    expect(alunoRepository.update).toHaveBeenCalledWith(httpRequest.body)
   })
 
   test('ensure return updated aluno', async () => {
@@ -388,7 +388,7 @@ describe('AlunosController.spec.ts - put', () => {
   test('ensure throws if repository throws', async () => {
     //! Arrange
     const error = new Error('error message')
-    alunosRepository.update.mockRejectedValueOnce(error)
+    alunoRepository.update.mockRejectedValueOnce(error)
     //! Act
     //! Assert
     await expect(sut.put(httpRequest)).rejects.toThrow(error)
@@ -399,16 +399,28 @@ describe('AlunosController.spec.ts - put', () => {
     //! Act
     await sut.put(httpRequest)
     //! Assert
-    expect(alunosRepository.find).toHaveBeenCalledWith({ id: aluno.id })
+    expect(alunoRepository.find).toHaveBeenCalledWith({ id: aluno.id })
   })
 
   test('ensure return error if aluno not found', async () => {
     //! Arrange
-    alunosRepository.find.mockResolvedValue([])
+    alunoRepository.find.mockResolvedValue([])
     //! Act
     const httpResponse = await sut.put(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(404)
     expect(httpResponse.body).toEqual({ message: 'aluno not found' })
+  })
+
+  test('ensure check if cpf is already in use by another aluno', async () => {
+    //! Arrange
+    alunoRepository.find.mockResolvedValue([{ ...aluno, id: 1 }])
+    alunoRepository.getAluno.mockResolvedValue({ ...aluno, id: 4546 })
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(alunoRepository.getAluno).toHaveBeenCalledWith({ cpf: '12345678901' })
+    expect(httpResponse.statusCode).toBe(409)
+    expect(httpResponse.body).toEqual({ message: 'cpf is already in use by another aluno' })
   })
 })
