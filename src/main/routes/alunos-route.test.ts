@@ -450,4 +450,13 @@ describe('alunos-route.test.ts - put', () => {
     expect(result.body).toEqual({ message: 'cpf is already in use by another aluno' })
     expect(result.status).toBe(409)
   })
+
+  test('ensure delete data', async () => {
+    //! Arrange
+    const alunoCreated = await createAluno(aluno)
+    //! Act
+    const result = await supertest(app).put('/api/alunos').send({ ...alunoCreated, name: undefined, email: undefined, score: undefined })
+    //! Assert
+    expect(result.body).toEqual({ ...alunoCreated, name: undefined, email: undefined, score: undefined })
+  })
 })
