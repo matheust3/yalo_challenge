@@ -65,4 +65,13 @@ describe('alunos-route.test.ts - get', () => {
     expect(result.status).toBe(404)
     expect(result.body).toEqual({ message: 'Aluno not found' })
   })
+
+  test('ensure id is required', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).get('/api/alunos/get-by-id')
+    //! Assert
+    expect(result.status).toBe(400)
+    expect(result.body).toEqual({ message: '"id" is required' })
+  })
 })
