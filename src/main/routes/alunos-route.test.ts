@@ -184,6 +184,16 @@ describe('alunos-route.test.ts - get', () => {
     //! Assert
     expect(result.body).toEqual([a3, a4])
   })
+
+  test('ensure return error if invalid param', async () => {
+    //! Arrange
+    await createAluno(aluno)
+    //! Act
+    const result = await supertest(app).get('/api/alunos?id=4')
+    //! Assert
+    expect(result.status).toBe(400)
+    expect(result.body).toEqual({ error: '"id" is not allowed' })
+  })
 })
 
 describe('alunos-route.test.ts - post', () => {
