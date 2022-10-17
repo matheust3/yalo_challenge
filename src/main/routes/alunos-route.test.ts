@@ -75,6 +75,15 @@ describe('alunos-route.test.ts - delete', () => {
     expect(result.body).toEqual({ message: 'Aluno not found' })
     expect(result.status).toBe(404)
   })
+
+  test('ensure return error if params is not provided', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).delete('/api/alunos')
+    //! Assert
+    expect(result.body).toEqual({ message: '"id" or "cpf" is required' })
+    expect(result.status).toBe(400)
+  })
 })
 
 describe('alunos-route.test.ts - post', () => {
