@@ -56,4 +56,13 @@ describe('alunos-route.test.ts - get', () => {
     expect(result.status).toBe(200)
     expect(result.body).toEqual(alunoCreated)
   })
+
+  test('ensure return 404 if aluno not fount', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).get('/api/alunos/get-by-id?id=1')
+    //! Assert
+    expect(result.status).toBe(404)
+    expect(result.body).toEqual({ message: 'Aluno not found' })
+  })
 })
