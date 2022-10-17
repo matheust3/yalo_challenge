@@ -206,6 +206,14 @@ describe('alunos-route.test.ts - get', () => {
     expect(result.status).toBe(400)
     expect(result.body).toEqual({ message: '"id" is not allowed' })
   })
+
+  test('ensure return empty if not has alunos in db', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).get('/api/alunos')
+    //! Assert
+    expect(result.body).toEqual([])
+  })
 })
 
 describe('alunos-route.test.ts - post', () => {
