@@ -74,4 +74,21 @@ describe('alunos-route.test.ts - get', () => {
     expect(result.status).toBe(400)
     expect(result.body).toEqual({ message: '"id" is required' })
   })
+
+  test('ensure id is a number', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).get('/api/alunos/get-by-id?id=abc')
+    //! Assert
+    expect(result.status).toBe(400)
+    expect(result.body).toEqual({ message: '"id" must be an integer' })
+  })
+  test('ensure id is a integer', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).get('/api/alunos/get-by-id?id=1.2')
+    //! Assert
+    expect(result.status).toBe(400)
+    expect(result.body).toEqual({ message: '"id" must be an integer' })
+  })
 })
