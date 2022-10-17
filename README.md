@@ -67,7 +67,7 @@ Iniciei o servidor
 
 ### Listagem dos alunos
 
-```http
+```
   GET /api/alunos
 ```
 
@@ -79,26 +79,26 @@ Iniciei o servidor
 
 ### Cadastro
 
-```http
+```
   POST /api/alunos
 ```
 body -> application/json
 
-```json
+```JSONC
 {
-    "id": int, (obrigatório)
-    "cpf": string, (obrigatório)
-    "id_colegio": int, (obrigatório)
-    "id_turma": int, (obrigatório)
-    "name": string, (opcional)
-    "email": string, (opcional)
-    "score": float (opcional)
+    "id": 1, //int, (obrigatório)
+    "cpf": "01234567890", //string, (obrigatório)
+    "id_colegio": 1, //int (obrigatório)
+    "id_turma": 1, //int (obrigatório)
+    "name": "name", //string (opcional)
+    "email": "email@d.com", //string (opcional)
+    "score": 10.0 //float (opcional)
 }
 ```
 
 ### Exclusão
 
-```http
+```
   DELETE /api/alunos
 ```
 
@@ -109,26 +109,26 @@ body -> application/json
 
 ### Atualização
 
-```http
+```
   PUT /api/alunos
 ```
 body -> application/json
 
-```json
+```JSONC
 {
-    "id": int, (obrigatório)
-    "cpf": string, (obrigatório)
-    "id_colegio": int, (obrigatório)
-    "id_turma": int, (obrigatório)
-    "name": string, (opcional)
-    "email": string, (opcional)
-    "score": float (opcional)
+    "id": 1, //int, (obrigatório)
+    "cpf": "01234567890", //string, (obrigatório)
+    "id_colegio": 1, //int (obrigatório)
+    "id_turma": 1, //int (obrigatório)
+    "name": "name", //string (opcional)
+    "email": "email@d.com", //string (opcional)
+    "score": 10.0 //float (opcional)
 }
 ```
 
 ### Busca (getById)
 
-```http
+```
   GET /api/alunos/get-by-id
 ```
 
