@@ -8,8 +8,9 @@
   "extensions": [
     "ms-azuretools.vscode-docker",
     "streetsidesoftware.code-spell-checker-portuguese-brazilian",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "prisma.prisma"
   ],
   "workspaceFolder": "/home/developer/yalo_dev",
-  "postStartCommand": "npm install -g npm"
+  "postStartCommand": "npm install -g npm && npm i && npx prisma generate"
 }

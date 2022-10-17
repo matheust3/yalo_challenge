@@ -1,0 +1,22 @@
+// Esse esquema é uma cópia do esquema de produção, mas com um conector SQLite
+// Isso facilita os testes de integração, pois não é necessário um banco de dados
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../ci/prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../ci/integration.db"
+}
+
+model Alunos {
+  id         Int      @id
+  cpf        String   @unique
+  name       String?
+  email      String?
+  id_colegio Int
+  id_turma   Int
+  score      Decimal?
+}

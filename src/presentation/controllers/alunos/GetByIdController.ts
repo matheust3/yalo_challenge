@@ -9,7 +9,7 @@ export class GetByIdController implements IController {
   async get (httpRequest: IHttpRequest): Promise<IHttpResponse> {
     // Verifica se o id foi passado
     const idStr = httpRequest.params?.id
-    if (idStr === undefined) {
+    if (typeof idStr !== 'string') {
       return {
         statusCode: 400,
         body: { message: '"id" is required' }

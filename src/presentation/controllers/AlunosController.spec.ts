@@ -81,6 +81,15 @@ describe('AlunosController.spec.ts - del', () => {
     expect(httpResponse.body).toEqual({ message: '"id" or "cpf" is required' })
   })
 
+  test('ensure check if aluno exists if id is undefined', async () => {
+    //! Arrange
+    httpRequest.params = { cpf: '12345678901' }
+    //! Act
+    await sut.del(httpRequest)
+    //! Assert
+    expect(alunoRepository.getAluno).toHaveBeenCalledWith({ cpf: '12345678901' })
+  })
+
   test('ensure check if aluno exists', async () => {
     //! Arrange
     //! Act
@@ -101,10 +110,11 @@ describe('AlunosController.spec.ts - del', () => {
 
   test('ensure return 204 if delete aluno', async () => {
     //! Arrange
+    alunoRepository.getAluno.mockResolvedValue({ ...aluno, id: 4546 })
     //! Act
     const httpResponse = await sut.del(httpRequest)
     //! Assert
-    expect(alunoRepository.delete).toHaveBeenCalledWith(1000)
+    expect(alunoRepository.delete).toHaveBeenCalledWith(4546)
     expect(httpResponse.statusCode).toBe(204)
     expect(httpResponse.body).toBeUndefined()
   })
@@ -256,22 +266,41 @@ describe('AlunosController.spec.ts - post', () => {
     expect(alunoSchemaMocked.AlunoSchema.validate).toHaveBeenCalledWith(httpRequest.body)
   })
 
-  test('ensure check if cpf or id is not already in use', async () => {
+  test('ensure check if cpf and id is already in use', async () => {
     //! Arrange
     //! Act
     await sut.post(httpRequest)
     //! Assert
-    expect(alunoRepository.find).toHaveBeenCalledWith({ cpf: aluno.cpf, id: aluno.id })
+    expect(alunoRepository.find.mock.calls).toEqual(
+      [
+        [{ cpf: aluno.cpf }],
+        [{ id: aluno.id }]
+      ]
+    )
   })
 
-  test('ensure return error if cpf or id is already in use', async () => {
+  test('ensure return error if cpf is already in use', async () => {
     //! Arrange
-    alunoRepository.find.mockResolvedValue([aluno])
+    alunoRepository.find
+      .mockResolvedValueOnce([{ ...aluno, id: aluno.id + 1 }])
+      .mockResolvedValueOnce([])
     //! Act
     const httpResponse = await sut.post(httpRequest)
     //! Assert
     expect(httpResponse.statusCode).toBe(409)
-    expect(httpResponse.body).toEqual({ message: 'cpf or id is already in use' })
+    expect(httpResponse.body).toEqual({ message: 'cpf is already in use' })
+  })
+
+  test('ensure return error if id is already in use', async () => {
+    //! Arrange
+    alunoRepository.find
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([{ ...aluno, id: aluno.id, cpf: '01234567892' }])
+    //! Act
+    const httpResponse = await sut.post(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(409)
+    expect(httpResponse.body).toEqual({ message: 'id is already in use' })
   })
 
   test('ensure call repository with correct params', async () => {
@@ -304,16 +333,17 @@ describe('AlunosController.spec.ts - post', () => {
 describe('AlunosController.spec.ts - put', () => {
   let sut: SutTypes['sut']
   let httpRequest: SutTypes['httpRequest']
-  let alunosRepository: SutTypes['alunoRepository']
+  let alunoRepository: SutTypes['alunoRepository']
   let aluno: SutTypes['aluno']
 
   beforeEach(() => {
-    ({ sut, httpRequest, alunoRepository: alunosRepository, aluno } = makeSut())
+    ({ sut, httpRequest, alunoRepository, aluno } = makeSut())
     const alunoSchemaMocked = AlunoSchema as DeepMockProxy<typeof AlunoSchema> & typeof AlunoSchema
 
     alunoSchemaMocked.AlunoSchema.validate.mockReset().mockReturnValueOnce({ error: undefined, value: aluno })
 
-    alunosRepository.update.mockResolvedValue(aluno)
+    alunoRepository.update.mockResolvedValue(aluno)
+    alunoRepository.find.mockResolvedValue([aluno])
   })
 
   test('ensure return 400 if request body is invalid', async () => {
@@ -343,7 +373,7 @@ describe('AlunosController.spec.ts - put', () => {
     //! Act
     await sut.put(httpRequest)
     //! Assert
-    expect(alunosRepository.update).toHaveBeenCalledWith(httpRequest.body)
+    expect(alunoRepository.update).toHaveBeenCalledWith(httpRequest.body)
   })
 
   test('ensure return updated aluno', async () => {
@@ -358,9 +388,39 @@ describe('AlunosController.spec.ts - put', () => {
   test('ensure throws if repository throws', async () => {
     //! Arrange
     const error = new Error('error message')
-    alunosRepository.update.mockRejectedValueOnce(error)
+    alunoRepository.update.mockRejectedValueOnce(error)
     //! Act
     //! Assert
     await expect(sut.put(httpRequest)).rejects.toThrow(error)
+  })
+
+  test('ensure check if aluno exists', async () => {
+    //! Arrange
+    //! Act
+    await sut.put(httpRequest)
+    //! Assert
+    expect(alunoRepository.find).toHaveBeenCalledWith({ id: aluno.id })
+  })
+
+  test('ensure return error if aluno not found', async () => {
+    //! Arrange
+    alunoRepository.find.mockResolvedValue([])
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual({ message: 'aluno not found' })
+  })
+
+  test('ensure check if cpf is already in use by another aluno', async () => {
+    //! Arrange
+    alunoRepository.find.mockResolvedValue([{ ...aluno, id: 1 }])
+    alunoRepository.getAluno.mockResolvedValue({ ...aluno, id: 4546 })
+    //! Act
+    const httpResponse = await sut.put(httpRequest)
+    //! Assert
+    expect(alunoRepository.getAluno).toHaveBeenCalledWith({ cpf: '12345678901' })
+    expect(httpResponse.statusCode).toBe(409)
+    expect(httpResponse.body).toEqual({ message: 'cpf is already in use by another aluno' })
   })
 })
