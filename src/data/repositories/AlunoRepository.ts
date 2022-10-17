@@ -83,11 +83,11 @@ export class AlunoRepository implements IAlunoRepository {
       where: { id: aluno.id },
       data: {
         cpf: aluno.cpf,
-        name: aluno.name,
-        email: aluno.email,
+        name: aluno.name ?? null,
+        email: aluno.email ?? null,
         id_colegio: aluno.id_colegio,
         id_turma: aluno.id_turma,
-        score: aluno.score
+        score: aluno.score ?? null
       }
     })
 

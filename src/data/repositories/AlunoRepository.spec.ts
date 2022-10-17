@@ -361,6 +361,24 @@ describe('AlunoRepository.spec.ts - update', () => {
     })
   })
 
+  test('ensure call prisma with nulls if data is undefined', async () => {
+    //! Arrange
+    //! Act
+    await sut.update({ ...aluno, email: undefined, name: undefined, score: undefined })
+    //! Assert
+    expect(prismaClient.alunos.update).toBeCalledWith({
+      where: { id: aluno.id },
+      data: {
+        cpf: aluno.cpf,
+        name: null,
+        email: null,
+        id_colegio: aluno.id_colegio,
+        id_turma: aluno.id_turma,
+        score: null
+      }
+    })
+  })
+
   test('ensure return aluno without name if prisma return name null', async () => {
     //! Arrange
     prismaClient.alunos.update.mockResolvedValueOnce(mock<Alunos>({ name: null, score: new Decimal(1) }))
