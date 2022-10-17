@@ -84,7 +84,7 @@ Iniciei o servidor
 ```
 body -> application/json
 
-```json
+```JSONC
 {
     "id": 1, //int, (obrigatório)
     "cpf": "01234567890", //string, (obrigatório)
@@ -114,7 +114,7 @@ body -> application/json
 ```
 body -> application/json
 
-```json
+```JSONC
 {
     "id": 1, //int, (obrigatório)
     "cpf": "01234567890", //string, (obrigatório)
