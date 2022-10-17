@@ -185,6 +185,18 @@ describe('alunos-route.test.ts - get', () => {
     expect(result.body).toEqual([a3, a4])
   })
 
+  test('ensure filter by multiple params', async () => {
+    //! Arrange
+    await createAluno(aluno)
+    const a2 = await createAluno({ ...aluno, id: 2, cpf: '12345678902', score: 9, name: 'Aluno 2', id_colegio: 2, id_turma: 2 })
+    await createAluno({ ...aluno, id: 3, cpf: '12345678903', score: 9, name: 'Aluno 3', id_colegio: 2, id_turma: 3 })
+    await createAluno({ ...aluno, id: 4, cpf: '12345678904', score: 9, name: 'Aluno 4', id_colegio: 3, id_turma: 2 })
+    //! Act
+    const result = await supertest(app).get('/api/alunos?score=9&id_colegio=2&id_turma=2')
+    //! Assert
+    expect(result.body).toEqual([a2])
+  })
+
   test('ensure return error if invalid param', async () => {
     //! Arrange
     await createAluno(aluno)
@@ -192,7 +204,7 @@ describe('alunos-route.test.ts - get', () => {
     const result = await supertest(app).get('/api/alunos?id=4')
     //! Assert
     expect(result.status).toBe(400)
-    expect(result.body).toEqual({ error: '"id" is not allowed' })
+    expect(result.body).toEqual({ message: '"id" is not allowed' })
   })
 })
 
