@@ -114,7 +114,7 @@ body -> application/json
 ```
 body -> application/json
 
-```
+```json
 {
     "id": 1, //int, (obrigatório)
     "cpf": "01234567890", //string, (obrigatório)
