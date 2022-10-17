@@ -66,6 +66,15 @@ describe('alunos-route.test.ts - delete', () => {
     expect(result.body).toEqual({})
     expect(result.status).toBe(204)
   })
+
+  test('ensure return error if aluno not exists', async () => {
+    //! Arrange
+    //! Act
+    const result = await supertest(app).delete(`/api/alunos?id=${aluno.id}`)
+    //! Assert
+    expect(result.body).toEqual({ message: 'Aluno not found' })
+    expect(result.status).toBe(404)
+  })
 })
 
 describe('alunos-route.test.ts - post', () => {
