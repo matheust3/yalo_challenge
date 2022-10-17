@@ -12,7 +12,8 @@
     "test:integration": "npm test -- --watch -c jest-integration.config.js",
     "test:ci": "npm test -- --coverage --detectOpenHandles",
     "test:staged": "npm test -- --findRelatedTests",
-    "test:verbose": "npm run build-ci && npx jest --passWithNoTests --runInBand"
+    "test:verbose": "npm run build-ci && npx jest --passWithNoTests --runInBand",
+    "prepare": "husky install"
   },
   "keywords": [],
   "license": "ISC",
